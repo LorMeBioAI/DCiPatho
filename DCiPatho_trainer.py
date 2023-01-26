@@ -16,7 +16,10 @@ class Trainer(object):
     def _train_single_batch(self, x, labels):
         self._optimizer.zero_grad()
         y_predict = self._model(x)
+        #
+        # y_predict = torch.Tensor(y_predict)
         loss = self._loss_func(y_predict.view(-1), labels)
+        # loss = self._loss_func(y_predict[0].view(-1), labels)
 
         loss.backward()
         self._optimizer.step()
@@ -53,5 +56,5 @@ class Trainer(object):
             torch.cuda.set_device(config.device_id)
             self._model.cuda()
 
-    def save(self):
-        self._model.saveModel()
+    def save(self,model_name):
+        self._model.saveModel(model_name)
