@@ -1,6 +1,6 @@
 # DCiPatho
 
-DCiPatho is a tool based on the k-mer frequence data for fast classification of pathogens from sequencing data.
+DCiPatho is a tool for rapid identification of pathogens from sequencing data. This tool is based on the k-mer frequence data.
 
 ## Introduction
 
@@ -16,22 +16,52 @@ torch~=1.10.0+cu102
 pandas~=1.1.5
 scikit-learn~=0.24.2
 ```
+## Download dataset 
+First download all the files from this link:
+https://zenodo.org/record/7571307#.Y9H0e3ZBxPa
 
-## Examples
+### Toy Dataset: Mini-BacRefSeq
+ The Mini-BacRefSeq is comprised of 1,506 complete genomes (Supplementary Table 2), including 707 pathogenic bacterial strains (540 species, including animal, human, and plant pathogens) and 799 nonpathogenic bacterial strains (687 species).
+ The file name of the frequency features extracted on the Mini-BacRefSeq dataset are:
+ ```
+ toy_dataset_for_DCiPatho.zip
+ ```
 
-Set parameters in DCiPatho_config.py file.
 
-Use python DCiPatho.py to train and evaluate model.
+### Full Dataset: BacRefSeq 
+The complete genomes of the 32,927 bacteria were labelled as pathogenic or nonpathogenic bacterial strains. Based on the genus level, 22,046 genomes were labelled as pathogenic bacterial strains (1269 genera), and 10882 genomes were as labelled nonpathogenic bacterial strains (6568 genera). Multiple sequences of chromosomes and plasmids were included for the complete genome sequences.
+Please see Excel NCBI_22June_RefSeq_32927_Complete_1NP_2P_taxnonmy.csv for details of the dataset.
+If you want to download these fasta files from the dataset, please run:
+```
+NCBI_download.py
+```
+### Our best DCiPatho model for prediction
+The model is named for ```DCiPatho_best_k3-7_model.pt```
 
-**Input data**:
+For more information on its use, please see: #Basic demo for prediction.
 
 
-You can download the k-mer frequencies of MAGs dataset in the link below, then unzip them to example_data file.
 
-Link：https://pan.baidu.com/s/1cVXoRre9eDuslTNVqD-EAQ 
-code：dci1
 
-**Output data**:
 
-The probability of input sequences as pathogen.
+
+## Basic demo for prediction
+If you have already downloaded our DCiPatho_best_k3-7_model.pt,then:
+you can predict pathogenic potentials with the built-in models out of the box, first, change `pred_input_path` in `DCiPatho_config.py` to the directory containing the .fasta file you need to classify, and set `pred_output_path` to the directory where the prediction results need to be output, then:
+
+```
+# run predcit  
+
+python DCiPatho.py
+```
+
+
+
+## Basic demo for training on Mini-BacRefSeq dataset
+
+You can set the parameter of training and model in DCiPatho_config.py file. Then you can train the DCiPatho model and evaluate it on mini-RefSeq dataset by running:
+
+``````python
+python DCiPatho_main.py
+``````
 
