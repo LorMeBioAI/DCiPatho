@@ -6,15 +6,52 @@ from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, matthews_co
 
 from DCiPatho_config import Config
 from DCiPatho_network import DCiPatho
-from Utils.tool import DataPreprocess
+from Utils import cal
+from Utils.combine_fna import combine
+from Utils.tool import data_preprocess_for_predict
 
 
-# use trained model to predict 
+def load_model(path):
+    model = DCiPatho().eval()
+    if config.use_cuda:
+        model.load_state_dict(torch.load(path))
+        print('model loaded using cuda')
+    else:
+        model.load_state_dict(torch.load(path), map_location=torch.device('cpu'))
+        print('model loaded using cpu')
+    return model
 
-def predict(model, test_data, y_test=False, eval=False, save_file=None):
-    y_pred_probs = model(test_data)
+
+# use trained model to predict
+def predict(y_test=False):
+    model = load_model(config.best_model_name)
+    combine(config.raw_fasta_path, config.combined_fasta_path)
+    print('calculate kmer freqs..')
+    names = cal.cal_main(config.combined_fasta_path, config.num_procs, config.ks, config.freqs_file)
+    # sentences_idx = load_dataset_word2vec(message)
+    X = data_preprocess_for_predict(config.freqs_file)
+    X = torch.tensor(X).float()
+    y_pred_probs = model(X)
+    # y_pred = torch.where(y_pred_probs > 0.5, torch.ones_like(y_pred_probs), torch.zeros_like(y_pred_probs))
+    # y_pred = torch.where(y_pred_probs > 0.5, torch.ones_like(y_pred_probs), torch.zeros_like(y_pred_probs))
+    y_pred = y_pred_probs.detach().cpu().numpy().tolist()
+    # y_pred = y_pred.cpu().numpy().tolist()
+    print('my_prediction', y_pred)
+    res = []
+    for i, d in enumerate(names):
+        res.append({'name': names[i], 'value': y_pred[i]})
+    print(res)
+
     y_pred = torch.where(y_pred_probs > 0.5, torch.ones_like(y_pred_probs), torch.zeros_like(y_pred_probs))
-    if eval:
+    # save if needed
+    if config.save_res_path:
+        y_pred_probs = y_pred_probs.cpu().tolist()
+        y_pred = y_pred.cpu().tolist()
+        d = {'names': names, 'y_pred_probs': y_pred_probs, 'y_pred': y_pred}
+        df = pd.DataFrame(d)
+        df.to_csv(config.save_res_path)
+    # If there are labels for test_data, evaluate here
+    if y_test:
         accuracy = accuracy_score(y_test.cpu(), y_pred.cpu())
         roc = roc_auc_score(y_test.cpu(), y_pred.cpu())
         f1 = f1_score(y_test.cpu(), y_pred.cpu())
@@ -23,26 +60,10 @@ def predict(model, test_data, y_test=False, eval=False, save_file=None):
         print('f1:', f1)
         print('roc:', roc)
         print('mcc:', mcc)
-        if len(save_file) > 0:
-            y_pred_probs = y_pred_probs.cpu().tolist()
-            y_pred = y_pred.cpu().tolist()
-            d = {'y_pred_probs': y_pred_probs, 'y_pred': y_pred}
-            df = pd.DataFrame(d)
-            df.to_csv(save_file + '.csv')
 
 
 if __name__ == '__main__':
     config = Config()
     s = time.time()
-    # X_test, y_test = testDataPreprocess()
-    X_train, X_val, X_test, y_train, y_val, y_test = DataPreprocess()
-
-    # df_X, X, labels = testDataPreprocess()
-    # dense_features_cols = getTrainData(df_X)
-    model = DCiPatho()
-    model.cuda()
-    model.load_state_dict(torch.load('models/0.950_best_k3-7_model.pt'))
-    test_data, y_test = torch.tensor(X_test).float().cuda(), torch.tensor(y_test).float().cuda()
-    output_path = 'output/1.13predict_x_test.csv'
-    predict(model, test_data, y_test, eval=True, save_file=output_path)
+    predict()
     print('costs:', time.time() - s)
