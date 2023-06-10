@@ -43,8 +43,8 @@ The `Config` class provides the configuration settings for training, evaluation,
 
 ### Train and Evaluation Settings
 
-- `patho_path`: The path to the npy or csv data file containing pathogenic sequences.
-- `nonpatho_path`: The path to the npy or csv data file containing non-pathogenic sequences.
+- `patho_path`: The path to the npy or csv data file containing pathogenic kmer frequency features.
+- `nonpatho_path`: The path to the npy or csv data file containing non-pathogenic kmer frequency features.
 - `hidden_layers`: A list specifying the number of hidden layers in the ResNet module.
 - `deep_layers`: A list specifying the number of hidden layers in the DeepNet module.
 - `num_cross_layers`: The number of CrossNet layers.
