@@ -19,12 +19,12 @@
     - [Prerequisites](#prerequisites-1)
   - [License](#license)
 
-DCiPatho is a deep learning approach for predicting the pathogenic potentials of genomic and metagenomic sequences. It utilizes a combination of deep cross neural networks, residual neural networks, and deep neural networks with integrated features of 3-to-7 k-mer. This approach outperforms traditional machine learning approaches that rely solely on single k-mer features and databases of known organisms, making it particularly effective for identifying unknown, unrecognized, and unmapped pathogen sequences.
+
 
 ## Introduction
 
 Pathogen identification is crucial from a One Health perspective. Traditional methods of pathogen detection rely on databases of known organisms, which limit their performance when faced with novel or uncharacterized sequences. DCiPatho addresses this limitation by employing machine learning techniques to infer pathogenic phenotypes from single Next-Generation Sequencing (NGS) reads, even in the absence of biological context.
-See more detail in https://academic.oup.com/bib/advance-article/doi/10.1093/bib/bbad194/7186278.
+See more details in https://academic.oup.com/bib/advance-article/doi/10.1093/bib/bbad194/7186278.
 
 ## Features
 
