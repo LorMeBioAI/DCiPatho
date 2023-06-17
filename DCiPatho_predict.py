@@ -13,11 +13,11 @@ from Utils.tool import data_preprocess_for_predict
 
 def load_model(path):
     model = DCiPatho().eval()
-    if config.use_cuda:
+    if config.use_cuda and torch.cuda.is_available():
         model.load_state_dict(torch.load(path))
         print('model loaded using cuda')
     else:
-        model.load_state_dict(torch.load(path), map_location=torch.device('cpu'))
+        model.load_state_dict(torch.load(path, map_location=torch.device('cpu')))
         print('model loaded using cpu')
     return model
 
