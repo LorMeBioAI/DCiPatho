@@ -80,11 +80,11 @@ Please adjust these settings accordingly before running the DCiPatho code.
 
 ## Requirements
 
-DciPatho is developed in Python 3 with modules and external tools.
+DciPatho is developed in Python 3.7 with modules and external tools.
 
 ```
 numpy~=1.19.5
-torch~=1.10.0+cu102
+torch~=1.10.0
 pandas~=1.1.5
 scikit-learn~=0.24.2
 ```
