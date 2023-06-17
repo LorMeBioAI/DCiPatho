@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 from DCiPatho_config import Config
 from DCiPatho_network import DCiPatho
 from DCiPatho_trainer import Trainer
-from Utils.tool import roc, acc, F1, mcc, data_reprocess_return_xy, data_reprocess_from_csv
+from Utils.tool import roc, acc, F1, mcc, data_reprocess_from_csv
 
 config = Config()
 
